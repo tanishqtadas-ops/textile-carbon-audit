@@ -1,0 +1,211 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Upload Activity Data — Carbon Audit (Textile)</title>
+
+<style>
+/* INTERNAL CSS for upload.html (clean & modern) */
+:root{
+  --bg1: linear-gradient(135deg,#74b9ff,#0984e3);
+  --card:#fff;
+  --accent:#0984e3;
+  --soft:#f1f8ff;
+  --muted:#556;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Arial;}
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--bg1);
+  padding:24px;
+}
+
+.container{
+  width:430px;
+  border-radius:14px;
+  background:var(--card);
+  box-shadow:0 12px 30px rgba(12,40,80,0.18);
+  overflow:hidden;
+  animation:pop .45s ease;
+}
+
+header{
+  padding:22px;
+  background:linear-gradient(90deg, rgba(9,132,227,0.08), rgba(31,122,140,0.04));
+}
+h1{margin:0;font-size:20px;color:#16324a}
+p.lead{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+.main{
+  padding:20px;
+}
+
+.upload-box{
+  border:2px dashed rgba(9,132,227,0.22);
+  background:var(--soft);
+  border-radius:10px;
+  padding:16px;
+  text-align:center;
+}
+
+.upload-box input[type=file]{
+  margin-top:10px;
+  width:100%;
+  padding:8px;
+}
+
+.row{display:flex;gap:12px;margin-top:14px}
+.btn{
+  flex:1;
+  background:var(--accent);
+  color:white;
+  border:none;
+  padding:11px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:600;
+}
+.btn.secondary{background:#eee;color:#123}
+
+.preview{
+  margin-top:14px;
+  max-height:160px;
+  overflow:auto;
+  border-radius:8px;
+  border:1px solid #f0f5fb;
+  padding:10px;
+  font-size:13px;
+  background:#fff;
+}
+
+.note{font-size:12px;color:#556;margin-top:8px}
+
+footer{
+  padding:10px 20px;
+  text-align:center;
+  font-size:12px;
+  color:#3b3b3b;
+  background:#fbfdff;
+}
+
+@keyframes pop { from { transform: translateY(8px); opacity:0 } to {transform:none; opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="container" role="main">
+  <header>
+    <h1>Industrial Carbon Audit — Textile (Upload Data)</h1>
+    <p class="lead">Upload activity CSV (Activity,Quantity,Unit). Example: Electricity,20000,kWh</p>
+  </header>
+
+  <div class="main">
+    <div class="upload-box">
+      <div><strong>Select CSV file</strong></div>
+      <input id="csvInput" type="file" accept=".csv,text/csv">
+      <div class="note">Or use the sample CSV link below to test.</div>
+    </div>
+
+    <div class="row">
+      <button class="btn" id="btnPreview">Preview CSV</button>
+      <button class="btn" id="btnGo" title="Compute and go to dashboard">Calculate & Open Dashboard</button>
+    </div>
+
+    <div id="preview" class="preview" aria-live="polite" hidden></div>
+
+    <div style="margin-top:12px;display:flex;gap:8px;">
+      <button class="btn secondary" id="loadSample">Load Sample CSV</button>
+      <button class="btn secondary" id="clearStorage">Clear Stored Data</button>
+    </div>
+
+    <p class="note">Tip: CSV must have three columns with headers exactly: <code>Activity,Quantity,Unit</code>. Case-insensitive.</p>
+  </div>
+
+  
+</div>
+
+<!-- Libraries: PapaParse only (parsing CSV) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="script.js"></script>
+<script>
+// Hooks for Upload page UI actions
+const csvInput = document.getElementById('csvInput');
+const btnPreview = document.getElementById('btnPreview');
+const previewDiv = document.getElementById('preview');
+const btnGo = document.getElementById('btnGo');
+const loadSample = document.getElementById('loadSample');
+const clearStorage = document.getElementById('clearStorage');
+
+btnPreview.addEventListener('click', ()=>{
+  const f = csvInput.files[0];
+  if(!f){ alert('Please select a CSV file or Load Sample'); return; }
+  Papa.parse(f, {header:true, skipEmptyLines:true, complete: (res)=>{
+    showPreview(res.data);
+  }, error: (err)=> alert('CSV parse error: '+err.message)});
+});
+
+loadSample.addEventListener('click', ()=>{
+  const sample = `Activity,Quantity,Unit
+Electricity,25000,kWh
+Diesel,1500,L
+Steam,4200,kg
+TextileWaste,550,kg
+Transport,4000,km
+`;
+  // store sample & preview
+  localStorage.setItem('activityDataCSV', sample);
+  // show preview (parse from string)
+  Papa.parse(sample, {header:true, skipEmptyLines:true, complete: (res)=> showPreview(res.data)});
+  alert('Sample CSV loaded to storage. Click "Calculate & Open Dashboard" to continue.');
+});
+
+clearStorage.addEventListener('click', ()=>{
+  localStorage.removeItem('activityDataCSV');
+  alert('Stored CSV cleared.');
+  previewDiv.hidden = true;
+});
+
+btnGo.addEventListener('click', ()=>{
+  // prefer file input; fallback to existing stored csv
+  const f = csvInput.files[0];
+  if(f){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      localStorage.setItem('activityDataCSV', e.target.result);
+      window.location.href = 'dashboard.html';
+    };
+    reader.readAsText(f);
+  } else {
+    // check if sample stored
+    const stored = localStorage.getItem('activityDataCSV');
+    if(stored){
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('No CSV selected and no stored sample. Please upload or load sample.');
+    }
+  }
+});
+
+function showPreview(rows){
+  if(!rows || rows.length===0){ previewDiv.innerText='No rows found'; previewDiv.hidden=false; return; }
+  let html = '<table style="width:100%;border-collapse:collapse"><thead><tr>';
+  Object.keys(rows[0]).forEach(h => html += `<th style="text-align:left;padding:6px;border-bottom:1px solid #eee">${h}</th>`);
+  html += '</tr></thead><tbody>';
+  rows.forEach(r=>{
+    html += '<tr>';
+    Object.values(r).forEach(v => html += `<td style="padding:6px;border-bottom:1px solid #fafafa">${String(v)}</td>`);
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  previewDiv.innerHTML = html;
+  previewDiv.hidden = false;
+}
+</script>
+</body>
+</html>
+

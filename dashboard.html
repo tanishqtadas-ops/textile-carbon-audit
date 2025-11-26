@@ -1,0 +1,142 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dashboard — Carbon Audit (Textile)</title>
+
+<style>
+/* INTERNAL CSS for dashboard.html */
+:root{
+  --bg:#f4f8fb;
+  --card:#fff;
+  --accent:#1f7a8c;
+  --muted:#556;
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, Arial; margin:0; background:var(--bg); color:#123}
+.header{
+  background:linear-gradient(90deg,#1f7a8c, #20b2aa);
+  color:white; padding:18px 24px; display:flex; align-items:center; justify-content:space-between;
+}
+.title{font-size:18px;font-weight:700}
+.container{max-width:1100px;margin:20px auto;padding:18px}
+.grid{display:grid;grid-template-columns: 1fr 420px; gap:16px}
+
+/* cards */
+.card{background:var(--card); border-radius:10px; padding:12px; box-shadow:0 10px 24px rgba(15,40,60,0.06)}
+.kpis{display:flex;gap:12px;margin-bottom:10px}
+.kpi{flex:1;padding:10px;border-radius:8px;text-align:center;background:linear-gradient(180deg,#fff,#f7fcfc)}
+.kpi h3{margin:0;font-size:13px;color:var(--muted)} .kpi p{margin:8px 0 0;font-size:18px;font-weight:700}
+
+/* charts area */
+.charts{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:12px}
+.chartBox{flex:1;padding:8px;border-radius:8px;background:var(--card)}
+.small{height:260px}
+.large{height:420px}
+
+/* sankey occupies right column */
+.sankeyBox{height:520px}
+
+/* suggestions */
+.suggestions ul{margin:0;padding-left:18px}
+.table{margin-top:10px;font-size:13px;border-collapse:collapse;width:100%}
+.table th,.table td{padding:8px;border-bottom:1px dashed #eee;text-align:left}
+
+/* controls */
+.controls{display:flex;gap:10px;align-items:center}
+.btn{border:none;padding:8px 12px;border-radius:8px;background:var(--accent);color:white;cursor:pointer}
+.smallBtn{padding:6px 10px;background:#eee;color:#333}
+.link{color:white;text-decoration:underline;opacity:.95}
+
+.footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .sankeyBox{height:360px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title">Industrial Carbon Emission Audit — Textile</div>
+  <div class="controls">
+    <button class="btn" id="btnBack">← Upload new CSV</button>
+    <!-- Link to uploaded research PDF on server (path provided) -->
+    <a class="link" href="/mnt/data/asep_research.pdf" target="_blank" title="Open research PDF">Research PDF</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="grid">
+    <div>
+      <div class="card">
+        <div class="kpis">
+          <div class="kpi"><h3>Total CO₂e</h3><p id="totalCO2">—</p></div>
+          <div class="kpi"><h3>Top Source</h3><p id="topSource">—</p></div>
+          <div class="kpi"><h3>Circularity (simple)</h3><p id="circ">—</p></div>
+        </div>
+
+        <div class="charts">
+          <div class="row">
+            <div class="chartBox small card">
+              <h4 style="margin:0 0 8px">Emissions by Activity (Bar)</h4>
+              <canvas id="barChart" style="width:100%;height:220px"></canvas>
+            </div>
+            <div class="chartBox small card">
+              <h4 style="margin:0 0 8px">Emissions Share (Donut)</h4>
+              <canvas id="pieChart" style="width:100%;height:220px"></canvas>
+            </div>
+          </div>
+
+          <div class="chartBox large card">
+            <h4 style="margin:0 0 8px">Monthly / Totals (Table)</h4>
+            <div id="tableWrap"></div>
+          </div>
+
+          <div class="chartBox card">
+            <h4 style="margin:0 0 8px">Suggestions</h4>
+            <div class="suggestions"><ul id="suggestionsList"></ul></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card sankeyBox" id="sankeyCard">
+        <h4>Material & Emissions Flow (Sankey)</h4>
+        <div id="sankeyDiv" style="width:100%;height:460px"></div>
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="script.js"></script>
+
+<script>
+// Dashboard page bootstrapping
+document.getElementById('btnBack').addEventListener('click', ()=> {
+  // go back to upload page
+  window.location.href = 'upload.html';
+});
+
+// when dashboard loads, initialize display
+window.addEventListener('DOMContentLoaded', async ()=>{
+  try{
+    await buildDashboardFromStoredCSV(); // defined in script.js
+  }catch(err){
+    console.error(err);
+    alert('Error building dashboard. See console for details.');
+  }
+});
+</script>
+</body>
+</html>
+

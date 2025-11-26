@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About • Carbon Emission Audit</title>
+  <style>
+    :root{
+      --bg:#f5f7fa;
+      --primary:#1f78d1;   /* same as homepage */
+      --green:#21b46b;
+      --purple:#8e44ad;
+      --muted:#555;
+      --card:#ffffff;
+      --radius:12px;
+      --max-width:1000px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:var(--bg);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* Top header */
+    header{
+      background:var(--primary);
+      color:white;
+      padding:20px;
+      text-align:center;
+      font-size:22px;
+      font-weight:700;
+    }
+
+    /* Main container */
+    .wrap{ max-width:var(--max-width); margin:28px auto; padding:18px; }
+
+    /* Navigation buttons (same look as homepage) */
+    .nav {
+      display:flex;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:20px;
+    }
+    .btn {
+      padding:12px 22px;
+      border-radius:28px;
+      border:none;
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+      transition: transform .18s, opacity .18s;
+    }
+    .btn:hover{ transform: translateY(-3px); opacity:.92; }
+    .btn.audit{ background:var(--primary); }
+    .btn.data{ background:var(--green); }
+    .btn.about{ background:var(--purple); }
+
+    /* Hero card */
+    .hero {
+      background:var(--card);
+      padding:20px;
+      border-radius:var(--radius);
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      text-align:left;
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+    .hero h1{ margin:0 0 6px 0; font-size:20px; color:var(--primary) }
+    .hero p{ margin:0; color:var(--muted) }
+
+    /* Grid of content cards */
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+      gap:18px;
+      margin-top:20px;
+    }
+    .card {
+      background:var(--card);
+      padding:18px;
+      border-radius:10px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.06);
+    }
+    h2{ color:var(--primary); margin-top:0; }
+    p, li{ color:var(--muted); line-height:1.7; }
+
+    .mission {
+      background: linear-gradient(180deg,#f3f9ff,#ffffff);
+      padding:16px;
+      border-radius:8px;
+      border-left:5px solid var(--primary);
+    }
+
+    /* Footer */
+    footer{
+      margin-top:28px;
+      text-align:center;
+      padding:18px 10px;
+      color:#fff;
+      background:#111;
+      border-radius:10px;
+    }
+
+    /* Small helpers */
+    .back { display:inline-block; margin-bottom:12px; color:var(--primary); text-decoration:none; font-weight:600; }
+    @media (max-width:520px){
+      .hero{ flex-direction:column; text-align:left; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Industrial Carbon Emission Audit — Textile
+  </header>
+
+  <div class="wrap">
+
+    <!-- Navigation buttons (links to your pages) -->
+    <nav class="nav" aria-label="Primary">
+      <button class="btn audit" onclick="location.href='home.html'">Home</button>
+      <button class="btn data" onclick="location.href='upload.html'">Data</button>
+      <button class="btn about" onclick="location.href='dashboard.html'">Carbon Audit</button>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="about-heading">
+      <div style="flex:1">
+        <h1 id="about-heading">About this Project</h1>
+        <p>Simple, practical carbon emission audit template tailored for the textile industry. This page explains objectives, method, and how to use the site.</p>
+      </div>
+      <div style="width:140px; text-align:center;">
+        <!-- simple badge -->
+        <div style="background:var(--primary); color:#fff; padding:12px 10px; border-radius:10px; font-weight:700;">
+          Audit 2025
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <div class="grid">
+
+      <div class="card">
+        <h2>Overview</h2>
+        <p>
+          The Carbon Emission Audit helps identify and quantify CO₂e sources across the plant. It covers:
+        </p>
+        <ul>
+          <li>Fuel combustion (boilers, furnaces)</li>
+          <li>Electricity usage for processes</li>
+          <li>Transport and supply-chain emissions</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Mission</h2>
+        <div class="mission">
+          <p>
+            To assist textile facilities in measuring their carbon footprint and finding cost-effective reduction opportunities — improving sustainability while maintaining productivity.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Objectives</h2>
+        <ul>
+          <li>Provide a clear emissions breakdown (Scope 1 / 2 / 3)</li>
+          <li>Offer actionable recommendations</li>
+          <li>Enable data-driven monitoring and reporting</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Methodology</h2>
+        <p>
+          Data is collected monthly for fuels and electricity. Standard emission factors are applied to convert fuel/electricity usage into CO₂e. Results are aggregated to estimate annual emissions.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>How to use</h2>
+        <p>
+          Go to <strong>Data</strong> to upload or view CSV records. Open <strong>Carbon Audit</strong> to see results and suggested interventions. Use this About page to understand purpose and process.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Contacts</h2>
+        <p style="margin:0 0 8px 0;">Group leader: <strong>Tanishq Tadas</strong></p>
+        <p style="margin:0; color:var(--muted)">Email: tanishq.1251130046@vit.edu</p>
+        <p style="margin:0 0 8px 0;"><strong>Team Members :</strong></p>
+        <p style="margin:0 0 8px 0;"><strong>Swarali Salunkhe</strong></p>
+        <p style="margin:0 0 8px 0;"><strong>Yash Suwarnkar</strong></p>
+        <p style="margin:0 0 8px 0;"><strong>Swayam Chhatre</strong></p>
+      </div>
+
+    </div> <!-- /grid -->
+
+    <footer>
+      © 2025 Carbon Emission Audit • Textile Industry
+    </footer>
+
+  </div> <!-- /wrap -->
+
+</body>
+</html>
